@@ -15,8 +15,8 @@ var current_speed := walking_speed
 
 # Movement variables
 var jump_velocity := 8
-const lerp_speed := 10.0
-const air_lerp_speed := 2
+const lerp_speed := 15
+const air_lerp_speed := 3
 var current_lerp_speed := lerp_speed
 
 # Informative variable
@@ -68,9 +68,9 @@ func _physics_process(delta):
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-		current_lerp_speed = 3
+		current_lerp_speed = air_lerp_speed
 	else:
-		current_lerp_speed = 15
+		current_lerp_speed = lerp_speed
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
