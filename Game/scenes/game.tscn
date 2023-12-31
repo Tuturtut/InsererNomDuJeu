@@ -1,8 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://cg7jevsvrc627"]
+[gd_scene load_steps=14 format=3 uid="uid://cg7jevsvrc627"]
 
 [ext_resource type="PackedScene" uid="uid://q6p1ma8viwrp" path="res://scenes/player.tscn" id="1_3hb8r"]
+[ext_resource type="Texture2D" uid="uid://djkr4hj1lw24t" path="res://textures/path_straigth.png" id="1_3x6iu"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_53opu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sspx4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p75k7"]
+albedo_texture = ExtResource("1_3x6iu")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_im14s"]
+material = SubResource("StandardMaterial3D_p75k7")
 size = Vector2(50, 50)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vahdq"]
@@ -21,14 +32,28 @@ sky = SubResource("Sky_1k4wn")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h8jlt"]
+albedo_color = Color(0.737255, 0.913725, 1, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_dm8ou"]
+material = SubResource("StandardMaterial3D_h8jlt")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jvejh"]
-size = Vector3(1, 20, 1)
+size = Vector3(1, 50, 1)
 
 [node name="Level" type="Node3D"]
 
+[node name="Box" type="MeshInstance3D" parent="."]
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 3, 0, 2, 0)
+mesh = SubResource("BoxMesh_53opu")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Box"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box/StaticBody3D"]
+shape = SubResource("BoxShape3D_sspx4")
+
 [node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.051562, -0.00113857, 0.00765562)
 mesh = SubResource("PlaneMesh_im14s")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
