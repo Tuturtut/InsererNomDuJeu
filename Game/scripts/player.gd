@@ -5,19 +5,23 @@ extends CharacterBody3D
 @onready var standing_collision_shape = $Standing_collision_shape
 @onready var crouching_collision_shape = $Crouching_collision_shape
 @onready var ray_cast_3d = $RayCast3D
+@onready var dash_timer = $dash_timer
+@onready var dash_again_timer = $dash_again_timer
 
 # Variables
 # Movement Speed variables
-const walking_speed := 10
-const dash_speed := 40
-const crouch_speed:= 7
-var current_speed := walking_speed
+const WALFING_SPEED := 10
+const DASH_SPEED := 40
+const CROUCH_SPEED:= 7
+var current_speed := WALFING_SPEED
 
 # Movement variables
 var jump_velocity := 8
-const lerp_speed := 15
-const air_lerp_speed := 3
-var current_lerp_speed := lerp_speed
+const LERP_SPEED := 15
+const AIR_LERP_SPEED := 2 
+var current_lerp_speed := LERP_SPEED
+var dashing := false
+var can_dash = true
 
 # Informative variable
 const head_y_position := 1.8
@@ -47,30 +51,32 @@ func _physics_process(delta):
 	
 	# Crouch
 	if Input.is_action_pressed("crouch"):
-		current_speed = crouch_speed
+		current_speed = CROUCH_SPEED
 		
 		standing_collision_shape.disabled = true
 		crouching_collision_shape.disabled = false
 		
-		head.position.y = lerp(head.position.y, head_y_position + crouching_depth, delta * lerp_speed * 2)
+		head.position.y = lerp(head.position.y, head_y_position + crouching_depth, delta * LERP_SPEED * 2)
 	elif !ray_cast_3d.is_colliding():
 		standing_collision_shape.disabled = false
 		crouching_collision_shape.disabled = true
 		
-		head.position.y = lerp(head.position.y, head_y_position, delta * lerp_speed)
-		
-		# Dash
-		if Input.is_action_pressed("dash"):
-			current_speed = dash_speed
-		else:
-			current_speed = walking_speed
+		head.position.y = lerp(head.position.y, head_y_position, delta * LERP_SPEED)
+				
+		current_speed = WALFING_SPEED
+	if Input.is_action_just_pressed("dash") and can_dash:
+		dashing = true
+		can_dash = false
+		dash_timer.start()
+		dash_again_timer.start()
+	
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-		current_lerp_speed = air_lerp_speed
+		current_lerp_speed = AIR_LERP_SPEED
 	else:
-		current_lerp_speed = lerp_speed
+		current_lerp_speed = LERP_SPEED
 
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
@@ -81,10 +87,22 @@ func _physics_process(delta):
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
 	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
+		if dashing:
+			velocity.x = direction.x * DASH_SPEED
+			velocity.z = direction.z * DASH_SPEED
+		else:
+			velocity.x = direction.x * current_speed
+			velocity.z = direction.z * current_speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)
 
 	move_and_slide()
+
+
+func _on_dash_timer_timeout():
+	dashing = false
+
+
+func _on_dash_again_timer_timeout():
+	can_dash = true
