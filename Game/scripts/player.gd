@@ -17,9 +17,10 @@ const WALKING_SPEED := 10
 const DASH_SPEED := 40
 const CROUCH_SPEED:= 7
 var current_speed := WALKING_SPEED
+var previous_speed := WALKING_SPEED
 
 # Movement variables
-var jump_velocity := 8
+var jump_velocity := 10
 const LERP_SPEED := 15
 const AIR_LERP_SPEED := 2 
 var current_lerp_speed := LERP_SPEED
@@ -53,6 +54,9 @@ var direction = Vector3.ZERO
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+# Debug
+var dash_time := 0.0
+
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -72,13 +76,18 @@ func _physics_process(delta):
 	
 	# Dash
 	if Input.is_action_just_pressed("dash") and can_dash:
+		print("start")
 		dashing = true
 		can_dash = false
 		dash_timer.start()
 		dash_again_timer.start()
-		direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
-
-		
+		# Dash sans mouvement du joueur
+		if input_dir == Vector2.ZERO:
+			direction = transform.basis * Vector3(0, 0, -1)
+			
+		# Dash avec mouvement du joueur
+		else:
+			direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
 	# Reset speed
 	if Input.is_action_just_pressed("reset_speed"):
 		direction.x = 0
@@ -112,9 +121,7 @@ func _physics_process(delta):
 	elif crouching:
 		head_bobbing_current_intensity = HEAD_BOBBING_CROUCHING_INTENSITY
 		head_bobbing_index += HEAD_BOBBING_CROUCHING_SPEED * delta
-		
-		
-
+	
 	if is_on_floor() && input_dir != Vector2.ZERO:
 		head_bobbing_vector.y = sin(head_bobbing_index)
 		head_bobbing_vector.x = sin(head_bobbing_index/2)+0.5
@@ -133,28 +140,32 @@ func _physics_process(delta):
 	else:
 		current_lerp_speed = LERP_SPEED
 
+
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = jump_velocity
 
 	if dashing: 
 		current_speed = DASH_SPEED
+	elif crouching:
+		current_speed = CROUCH_SPEED
 	else:
 		current_speed = WALKING_SPEED
-		
 	direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
-	if direction:		
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, current_speed)
-		velocity.z = move_toward(velocity.z, 0, current_speed)
+	
+
+	
+	velocity.x = direction.x * current_speed
+	velocity.z = direction.z * current_speed
+
+
 
 	move_and_slide()
 
 
 func _on_dash_timer_timeout():
 	dashing = false
+	print("end")
 
 
 func _on_dash_again_timer_timeout():

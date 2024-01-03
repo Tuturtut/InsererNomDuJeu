@@ -21,6 +21,13 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/resizable=false
 
+[file_customization]
+
+folder_colors={
+"res://scenes/": "blue",
+"res://scripts/": "orange"
+}
+
 [input]
 
 move_forward={
@@ -65,7 +72,7 @@ reset_speed={
 
 [physics]
 
-3d/default_gravity=12.0
+3d/default_gravity=15.0
 
 [rendering]
 
