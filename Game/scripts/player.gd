@@ -151,7 +151,9 @@ func _physics_process(delta):
 		current_speed = CROUCH_SPEED
 	else:
 		current_speed = WALKING_SPEED
-	direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
+	
+	if !dashing: 
+		direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
 	
 
 	
