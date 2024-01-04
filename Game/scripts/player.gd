@@ -49,6 +49,7 @@ const crouching_depth := -0.5
 
 # Input variables
 const mouse_sensitivity := 0.05
+var input_dir = Vector2.ZERO
 var direction = Vector3.ZERO
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -60,40 +61,52 @@ var dash_time := 0.0
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-
-
 func _input(event):
 	if event is InputEventMouseMotion:
-		rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))		
-		head.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity))
-		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))		
+			head.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity))
+			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 func _physics_process(delta):
 	
-	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	if Input.is_action_just_pressed("ui_cancel"):
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	
 	# Dash
-	if Input.is_action_just_pressed("dash") and can_dash:
-		print("start")
-		dashing = true
-		can_dash = false
-		dash_timer.start()
-		dash_again_timer.start()
-		# Dash sans mouvement du joueur
-		if input_dir == Vector2.ZERO:
-			direction = transform.basis * Vector3(0, 0, -1)
-			
-		# Dash avec mouvement du joueur
-		else:
-			direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
-	# Reset speed
-	if Input.is_action_just_pressed("reset_speed"):
-		direction.x = 0
-		direction.z = 0
+	handle_dash(input_dir)
 		
 	# Crouch
+	handle_crouch(delta)
+	
+	# Headbobbing
+	handle_head_bobbing(input_dir, delta)
+	
+	# Air control	
+	handle_air_control(delta)
+	
+	# Jump
+	handle_jump()
+	
+	current_speed = get_current_speed()
+	
+	
+	if !dashing: 
+		direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
+	
+	velocity.x = direction.x * current_speed
+	velocity.z = direction.z * current_speed
+
+	move_and_slide()
+
+func get_current_speed():
+	if dashing: 
+		return DASH_SPEED
+	elif crouching:
+		return CROUCH_SPEED
+	else:
+		return WALKING_SPEED
+
+func handle_crouch(delta):
 	if Input.is_action_pressed("crouch"):
 		current_speed = CROUCH_SPEED
 		
@@ -112,8 +125,22 @@ func _physics_process(delta):
 		current_speed = WALKING_SPEED
 		walking = true
 		crouching = false
-		
-	
+
+func handle_dash(input_dir):
+	if Input.is_action_just_pressed("dash") and can_dash:
+		dashing = true
+		can_dash = false
+		dash_timer.start()
+		dash_again_timer.start()
+		# Dash sans mouvement du joueur
+		if input_dir == Vector2.ZERO:
+			direction = transform.basis * Vector3(0, 0, -1)
+			
+		# Dash avec mouvement du joueur
+		else:
+			direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
+
+func handle_head_bobbing(input_dir, delta):
 	# Handle headbobbing
 	if walking:
 		head_bobbing_current_intensity = HEAD_BOBBING_WALKING_INTENSITY
@@ -132,43 +159,21 @@ func _physics_process(delta):
 	else:
 		eyes.position.y = lerp(eyes.position.y, 0.0, delta * LERP_SPEED)	
 		eyes.position.x = lerp(eyes.position.y, 0.0, delta * LERP_SPEED)
-	
+
+func handle_air_control(delta):
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 		current_lerp_speed = AIR_LERP_SPEED
 	else:
 		current_lerp_speed = LERP_SPEED
-
-
-	# Handle jump.
+	
+func handle_jump():
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = jump_velocity
 
-	if dashing: 
-		current_speed = DASH_SPEED
-	elif crouching:
-		current_speed = CROUCH_SPEED
-	else:
-		current_speed = WALKING_SPEED
-	
-	if !dashing: 
-		direction = lerp(direction, (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(), delta * current_lerp_speed)
-	
-
-	
-	velocity.x = direction.x * current_speed
-	velocity.z = direction.z * current_speed
-
-
-
-	move_and_slide()
-
-
 func _on_dash_timer_timeout():
 	dashing = false
-	print("end")
-
 
 func _on_dash_again_timer_timeout():
 	can_dash = true
