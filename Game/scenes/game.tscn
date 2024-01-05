@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://cg7jevsvrc627"]
+[gd_scene load_steps=15 format=3 uid="uid://cg7jevsvrc627"]
 
 [ext_resource type="PackedScene" uid="uid://q6p1ma8viwrp" path="res://scenes/player.tscn" id="1_3hb8r"]
 [ext_resource type="Texture2D" uid="uid://djkr4hj1lw24t" path="res://textures/path_straigth.png" id="1_3x6iu"]
+[ext_resource type="PackedScene" uid="uid://do02l08uk67mn" path="res://scenes/pause_menu.tscn" id="4_d5hm8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h8jlt"]
 albedo_color = Color(0.737255, 0.913725, 1, 1)
@@ -144,3 +145,7 @@ environment = SubResource("Environment_b36ce")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environement"]
 transform = Transform3D(-1, 8.74227e-08, -4.37114e-08, -4.37114e-08, 1.91068e-15, 1, 8.74228e-08, 1, 1.91068e-15, 0, 36.5215, 0)
 shadow_enabled = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("4_d5hm8")]

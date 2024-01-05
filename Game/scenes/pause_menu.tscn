@@ -1,40 +1,63 @@
-[gd_scene format=3 uid="uid://dd8mdgmjjxdin"]
+[gd_scene load_steps=3 format=3 uid="uid://do02l08uk67mn"]
+
+[ext_resource type="Script" path="res://scenes/pause_menu.gd" id="1_nvfm8"]
+
+[sub_resource type="Theme" id="Theme_kbfas"]
+default_font_size = 32
 
 [node name="PauseMenu" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_kbfas")
+script = ExtResource("1_nvfm8")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 0.760784)
+
+[node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -50.5
-offset_right = 35.0
-offset_bottom = 50.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/v_separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="Label" type="Label" parent="GridContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+text = "Pause"
 
-[node name="Resume" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="GridContainer"]
 layout_mode = 2
-text = "Resume"
+text = "Resume
+"
 
-[node name="Debug" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Debug" type="Button" parent="GridContainer"]
 layout_mode = 2
-text = "Debug"
+text = "Debug
+"
 
-[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="Quit" type="Button" parent="GridContainer"]
 layout_mode = 2
 text = "Quit"
+
+[connection signal="pressed" from="GridContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="GridContainer/Debug" to="." method="_on_debug_pressed"]
+[connection signal="pressed" from="GridContainer/Quit" to="." method="_on_quit_pressed"]
