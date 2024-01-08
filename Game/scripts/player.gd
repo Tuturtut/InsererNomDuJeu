@@ -55,15 +55,14 @@ var direction = Vector3.ZERO
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-# Debug
-var dash_time := 0.0
-
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _input(event):
 	if event is InputEventMouseMotion:
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			
+			# Mouvement de caméra
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))		
 			head.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity))
 			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
@@ -107,38 +106,40 @@ func get_current_speed():
 		return WALKING_SPEED
 
 func handle_crouch(delta):
-	if Input.is_action_pressed("crouch"):
-		current_speed = CROUCH_SPEED
-		
-		standing_collision_shape.disabled = true
-		crouching_collision_shape.disabled = false
-		walking = false
-		crouching = true
-		
-		head.position.y = lerp(head.position.y, head_y_position + crouching_depth, delta * LERP_SPEED * 2)
-	elif !ray_cast_3d.is_colliding():
-		standing_collision_shape.disabled = false
-		crouching_collision_shape.disabled = true
-		
-		head.position.y = lerp(head.position.y, head_y_position, delta * LERP_SPEED)
-				
-		current_speed = WALKING_SPEED
-		walking = true
-		crouching = false
+	if Global.crouch_enabled:
+		if Input.is_action_pressed("crouch"):
+			current_speed = CROUCH_SPEED
+			
+			standing_collision_shape.disabled = true
+			crouching_collision_shape.disabled = false
+			walking = false
+			crouching = true
+			
+			head.position.y = lerp(head.position.y, head_y_position + crouching_depth, delta * LERP_SPEED * 2)
+		elif !ray_cast_3d.is_colliding():
+			standing_collision_shape.disabled = false
+			crouching_collision_shape.disabled = true
+			
+			head.position.y = lerp(head.position.y, head_y_position, delta * LERP_SPEED)
+					
+			current_speed = WALKING_SPEED
+			walking = true
+			crouching = false
 
 func handle_dash(input_dir):
-	if Input.is_action_just_pressed("dash") and can_dash:
-		dashing = true
-		can_dash = false
-		dash_timer.start()
-		dash_again_timer.start()
-		# Dash sans mouvement du joueur
-		if input_dir == Vector2.ZERO:
-			direction = transform.basis * Vector3(0, 0, -1)
-			
-		# Dash avec mouvement du joueur
-		else:
-			direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
+	if Global.dash_enabled:
+		if Input.is_action_just_pressed("dash") and can_dash:
+			dashing = true
+			can_dash = false
+			dash_timer.start()
+			dash_again_timer.start()
+			# Dash sans mouvement du joueur
+			if input_dir == Vector2.ZERO:
+				direction = transform.basis * Vector3(0, 0, -1)
+				
+			# Dash avec mouvement du joueur
+			else:
+				direction = transform.basis * Vector3(input_dir.x, 0, input_dir.y)
 
 func handle_head_bobbing(input_dir, delta):
 	# Handle headbobbing
@@ -169,8 +170,9 @@ func handle_air_control(delta):
 		current_lerp_speed = LERP_SPEED
 	
 func handle_jump():
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = jump_velocity
+	if Global.jump_enabled:
+		if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+			velocity.y = jump_velocity
 
 func _on_dash_timer_timeout():
 	dashing = false

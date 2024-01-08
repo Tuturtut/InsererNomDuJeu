@@ -26,7 +26,6 @@ grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 0.760784)
 
 [node name="pause_menu" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -65,6 +64,7 @@ layout_mode = 2
 text = "Quit"
 
 [node name="debug_menu" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -97,69 +97,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Debug"
 
-[node name="DebugBack" type="Button" parent="debug_menu/GridContainer"]
-layout_mode = 2
-text = "Back"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="debug_menu/GridContainer"]
-layout_mode = 2
-
-[node name="Jump" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Jump"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 10
-text = "Jump
-"
-
-[node name="JumpCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Jump"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Dash" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Dash"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 10
-text = "Dash
-"
-
-[node name="DashCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Dash"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Crouch" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Crouch"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 10
-text = "Crouch
-"
-
-[node name="CrouchCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Crouch"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
 [connection signal="pressed" from="pause_menu/GridContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="pause_menu/GridContainer/Debug" to="." method="_on_debug_pressed"]
 [connection signal="pressed" from="pause_menu/GridContainer/Quit" to="." method="_on_quit_pressed"]
-[connection signal="pressed" from="debug_menu/GridContainer/DebugBack" to="." method="_on_debug_back_pressed"]
-[connection signal="pressed" from="debug_menu/GridContainer/DebugBack" to="." method="_on_back_pressed"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Jump/JumpCheckButton" to="." method="_on_jump_check_button_toggled"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Dash/DashCheckButton" to="." method="_on_dash_check_button_toggled"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Crouch/CrouchCheckButton" to="." method="_on_crouch_check_button_toggled"]
