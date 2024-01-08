@@ -28,6 +28,7 @@ window/size/resizable=false
 [file_customization]
 
 folder_colors={
+"res://icons/": "red",
 "res://scenes/": "blue",
 "res://scripts/": "orange"
 }

@@ -3,14 +3,14 @@ extends Control
 @onready var pause_menu = $pause_menu
 @onready var debug_menu = $debug_menu
 
-@onready var crouch_check_button = $debug_menu/GridContainer/HBoxContainer/Crouch/CrouchCheckButton
-@onready var dash_check_button = $debug_menu/GridContainer/HBoxContainer/Dash/DashCheckButton
-@onready var jump_check_button = $debug_menu/GridContainer/HBoxContainer/Jump/JumpCheckButton
+
+@onready var jump_check_button = $debug_menu/GridContainer/Skill/Jump/JumpCheckButton
+@onready var dash_check_button = $debug_menu/GridContainer/Skill/Dash/DashCheckButton
+@onready var crouch_check_button = $debug_menu/GridContainer/Skill/Crouch/CrouchCheckButton
+@onready var speed_slider = $debug_menu/GridContainer/Speed/HBoxContainer/SpeedSlider
 
 var is_paused: bool = false:
 	set = set_paused
-	
-var is_on_debug_menu := false
 	
 func _ready():
 	visible = false	
@@ -34,13 +34,11 @@ func set_paused(value:bool) -> void:
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-
 func _on_resume_button_pressed():
 	is_paused = false
 
 
 func _on_debug_pressed():
-	is_on_debug_menu = true
 	hide_and_show(pause_menu, debug_menu)
 	
 func hide_and_show(hided, showed):
@@ -64,3 +62,15 @@ func _on_dash_check_button_toggled(toggled_on):
 
 func _on_jump_check_button_toggled(toggled_on):
 	Global.jump_enabled = toggled_on
+
+
+func _on_speed_slider_value_changed(value):
+	Global.current_speed = value
+
+
+
+func _on_speed_reset_pressed():
+	Global.current_speed = Global.SPEED
+	speed_slider.set_value_no_signal(Global.SPEED)
+
+

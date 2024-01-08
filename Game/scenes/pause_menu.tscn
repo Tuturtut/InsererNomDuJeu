@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://do02l08uk67mn"]
+[gd_scene load_steps=4 format=3 uid="uid://do02l08uk67mn"]
 
 [ext_resource type="Script" path="res://scripts/pause_menu.gd" id="1_nvfm8"]
+[ext_resource type="Texture2D" uid="uid://dvnbq5ap1ruov" path="res://icons/resetIcon.png" id="2_vt38w"]
 
 [sub_resource type="Theme" id="Theme_kbfas"]
 default_font_size = 32
@@ -101,65 +102,94 @@ text = "Debug"
 layout_mode = 2
 text = "Back"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="debug_menu/GridContainer"]
+[node name="Skill" type="HBoxContainer" parent="debug_menu/GridContainer"]
 layout_mode = 2
 
-[node name="Jump" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
+[node name="Jump" type="VBoxContainer" parent="debug_menu/GridContainer/Skill"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Jump"]
+[node name="Label" type="Label" parent="debug_menu/GridContainer/Skill/Jump"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 10
 text = "Jump
 "
 
-[node name="JumpCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Jump"]
+[node name="JumpCheckButton" type="CheckButton" parent="debug_menu/GridContainer/Skill/Jump"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Dash" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
+[node name="Dash" type="VBoxContainer" parent="debug_menu/GridContainer/Skill"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Dash"]
+[node name="Label" type="Label" parent="debug_menu/GridContainer/Skill/Dash"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 10
 text = "Dash
 "
 
-[node name="DashCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Dash"]
+[node name="DashCheckButton" type="CheckButton" parent="debug_menu/GridContainer/Skill/Dash"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Crouch" type="VBoxContainer" parent="debug_menu/GridContainer/HBoxContainer"]
+[node name="Crouch" type="VBoxContainer" parent="debug_menu/GridContainer/Skill"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="debug_menu/GridContainer/HBoxContainer/Crouch"]
+[node name="Label" type="Label" parent="debug_menu/GridContainer/Skill/Crouch"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 10
 text = "Crouch
 "
 
-[node name="CrouchCheckButton" type="CheckButton" parent="debug_menu/GridContainer/HBoxContainer/Crouch"]
+[node name="CrouchCheckButton" type="CheckButton" parent="debug_menu/GridContainer/Skill/Crouch"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+
+[node name="Speed" type="VBoxContainer" parent="debug_menu/GridContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="debug_menu/GridContainer/Speed"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 15
+text = "Speed
+"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="debug_menu/GridContainer/Speed"]
+layout_mode = 2
+
+[node name="SpeedSlider" type="HSlider" parent="debug_menu/GridContainer/Speed/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 5.0
+step = 0.1
+value = 1.0
+
+[node name="SpeedReset" type="Button" parent="debug_menu/GridContainer/Speed/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("2_vt38w")
 
 [connection signal="pressed" from="pause_menu/GridContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="pause_menu/GridContainer/Debug" to="." method="_on_debug_pressed"]
 [connection signal="pressed" from="pause_menu/GridContainer/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="debug_menu/GridContainer/DebugBack" to="." method="_on_debug_back_pressed"]
 [connection signal="pressed" from="debug_menu/GridContainer/DebugBack" to="." method="_on_back_pressed"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Jump/JumpCheckButton" to="." method="_on_jump_check_button_toggled"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Dash/DashCheckButton" to="." method="_on_dash_check_button_toggled"]
-[connection signal="toggled" from="debug_menu/GridContainer/HBoxContainer/Crouch/CrouchCheckButton" to="." method="_on_crouch_check_button_toggled"]
+[connection signal="toggled" from="debug_menu/GridContainer/Skill/Jump/JumpCheckButton" to="." method="_on_jump_check_button_toggled"]
+[connection signal="toggled" from="debug_menu/GridContainer/Skill/Dash/DashCheckButton" to="." method="_on_dash_check_button_toggled"]
+[connection signal="toggled" from="debug_menu/GridContainer/Skill/Crouch/CrouchCheckButton" to="." method="_on_crouch_check_button_toggled"]
+[connection signal="value_changed" from="debug_menu/GridContainer/Speed/HBoxContainer/SpeedSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="debug_menu/GridContainer/Speed/HBoxContainer/SpeedSlider" to="." method="_on_speed_slider_value_changed"]
+[connection signal="pressed" from="debug_menu/GridContainer/Speed/HBoxContainer/SpeedReset" to="." method="_on_speed_reset_pressed"]
+[connection signal="pressed" from="debug_menu/GridContainer/Speed/HBoxContainer/SpeedReset" to="." method="_on_reset_pressed"]

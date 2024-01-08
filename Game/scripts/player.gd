@@ -13,17 +13,17 @@ extends CharacterBody3D
 
 # Variables
 # Movement Speed variables
-const WALKING_SPEED := 10
-const DASH_SPEED := 40
-const CROUCH_SPEED:= 7
-var current_speed := WALKING_SPEED
-var previous_speed := WALKING_SPEED
+var WALKING_SPEED = 10 * Global.current_speed
+var DASH_SPEED = 40 *Global.current_speed
+var CROUCH_SPEED= 7 * Global.current_speed
+var current_speed = WALKING_SPEED
+var previous_speed = WALKING_SPEED
 
 # Movement variables
-var jump_velocity := 10
-const LERP_SPEED := 15
-const AIR_LERP_SPEED := 2 
-var current_lerp_speed := LERP_SPEED
+var jump_velocity = 10
+var LERP_SPEED = 15
+var AIR_LERP_SPEED = 2
+var current_lerp_speed = LERP_SPEED
 
 
 # State
@@ -98,12 +98,15 @@ func _physics_process(delta):
 	move_and_slide()
 
 func get_current_speed():
+	#LERP_SPEED = 15 * Global.speed
+	#AIR_LERP_SPEED = 2 * Global.speed
+	
 	if dashing: 
-		return DASH_SPEED
+		return DASH_SPEED * Global.current_speed
 	elif crouching:
-		return CROUCH_SPEED
+		return CROUCH_SPEED * Global.current_speed
 	else:
-		return WALKING_SPEED
+		return WALKING_SPEED * Global.current_speed
 
 func handle_crouch(delta):
 	if Global.crouch_enabled:
